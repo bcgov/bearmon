@@ -1,0 +1,75 @@
+<ion-view title="Comment">		
+	<ion-nav-title>
+		<div width=100% class="dashboardHeader" ng-controller="timerControl">
+			<div class="row">
+                <div class="col text-right">
+                    Comment
+                </div>
+                <div class="col text-left">                
+                    <span style="color:{{color}}">
+                        {{value}}
+                    </span>
+                </div>
+            </div>
+		</div>
+	</ion-nav-title>
+    <div >
+
+        <ion-nav-bar class="bar-stable">
+            <ion-nav-buttons side="right">
+                <a class="button icon-left ion-log-out button-small button-assertive" ng-click = "showConfirm()">&nbsp;End Session</a>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-nav-view animation="slide-left-right" ></ion-nav-view>
+    </div>
+    <ion-content class="has-header container" overflow-scroll="true" padding="true">
+        <form class="list">
+            <div class="spacer spacer-20"></div>
+            <h2 class="center">General Comment(s)</h2>
+            <div class="spacer spacer-20"></div>
+
+            <label class="item item-input">
+                <textarea rows="10" cols="50" placeholder="Type here" ng-model="Comment.text"> </textarea>
+            </label>
+            <button class="button button-positive  button-block" ng-click="Comment.add()">Record</button>
+
+            <div class="spacer spacer-20"></div>       
+            <div class="row item-divider expando-pane">
+                <div class="col col-center"><h4>Session Comments</h4></div>
+                <div class="col col-center text-right">
+                    <a ng-class="{'button button-small button-icon icon ion-ios-plus-outline':!showComments, 'button button-small button-icon icon ion-ios-minus-outline':showComments}" ng-click="showComments=!showComments"></a>
+                </div>
+            </div> 
+
+            <!--show comments in session with edit option-->
+            <div ng-model="showComments" ng-hide="!showComments">
+                <ion-item ng-show="Comment.commentList.length == 0" class="item-divider">No comments available</ion-item>
+                <ion-list>
+                    <ion-item ng-repeat="comment in Comment.commentList">
+                        <div class="card">
+                            <div class="item item-text-wrap">                 
+                                <div class="row border-bottom">
+                                    <div class="col col-bottom col-75">
+                                        <p>{{comment.timeStamp + ' ' + comment.id}}</p>
+                                    </div>
+                                    <div class="col col-center text-right">
+                                        <div class="button-bar">
+                                            <a class="button button-icon icon ion-edit" ng-click="editRequest(comment.id)"></a>
+                                            <a class="button button-icon icon ion-close-circled" ng-click="Comment.clear(comment.id)"></a>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row padding-top-20">
+                                    <div class="col col-center">
+                                        {{comment.text}}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </ion-item>
+                </ion-list>
+                <div class="spacer spacer-40"></div>
+            </div>
+        </form>
+    </ion-content>
+</ion-view>

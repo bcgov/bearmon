@@ -1,0 +1,282 @@
+<ion-view style="" title="Add new Bear" can-swipe-back="false">
+	<ion-nav-title>
+		<div width=100% class="dashboardHeader" ng-controller="timerControl">
+			<div class="row">
+                <div class="col text-right">
+                    Bear
+                </div>
+                <div class="col text-left">                
+                    <span style="color:{{color}}">
+                        {{value}}
+                    </span>
+                </div>
+            </div>
+		</div>
+	</ion-nav-title>
+    <ion-nav-bar class="bar-stable">
+        <ion-nav-back-button class="button-icon icon ion-ios-arrow-back">Cancel</ion-nav-back-button>
+        <ion-nav-buttons side="right">
+            <a class="button icon-left ion-log-out button-small button-assertive" ng-click = "showConfirm()">&nbsp;End Session</a>
+        </ion-nav-buttons>
+    </ion-nav-bar>
+    
+    <ion-content class="has-header container" overflow-scroll="true" padding="true" delegate-handle="newBearScroll">
+
+        <div class="spacer spacer-10"></div>
+        <div class="row">
+            <div class="col col-33">
+            </div>
+            <div class="col col-33 text-center">
+                <h2>Add New Bear</h2>
+            </div>
+            <div class="col col-33 text-right">
+                <a ng-click="scrollDown()"><i class="ion-help-circled help"></i></a>
+            </div>
+        </div>
+        
+
+        <form style="" class="list">
+            <div style="width: 283px; height: 22px;" class="spacer"></div>
+            <ion-item style="" class="item-divider list-head" ng-show="FBearSet.isFocalPresent == ''&& Session.observationMode == 'Focal' ">Bear Type</ion-item>
+
+            <ion-checkbox ng-model="Bear.isFocal" ng-show="FBearSet.isFocalPresent == ''&& Session.observationMode == 'Focal' ">Focal</ion-checkbox>
+            <ion-item style="" class="item-divider list-head">Name of Bear</ion-item>
+            <label style="" class="item item-input">
+                <input placeholder="E.g. Alex" type="text" ng-model="Bear.name">
+            </label>
+            <div style="width: 283px; height: 22px;" class="spacer"></div>
+            
+            <ion-item style="" class="item-divider list-head">Accuracy</ion-item>
+            <label style="" class="item item-select">
+            <span class="input-label">Observation Quality</span>
+            <select ng-model="Bear.accuracy">
+                <option>Excellent</option>
+                <option>Good</option>
+                <option>Moderate</option>
+                <option>Low</option>
+                <option>Poor</option>
+            </select>
+            </label>
+            
+            
+            <label style="" class="item item-input">
+                <span class="input-label">Visual Equipment Used</span>
+                <input placeholder="    none, binoculars, scope, etc." type="text" ng-model="Bear.vAid">
+            </label>
+            <ion-checkbox ng-model="Bear.uStream">Urine Stream Observed</ion-checkbox>
+            
+            
+            <div style="width: 283px; height: 22px;" class="spacer"></div>
+            <ion-item style="" class="item-divider list-head">Location</ion-item>
+            <label style="" class="item item-select">
+                <span class="input-label">Bear Location ({{Session.zoneSchema}})</span>
+                <select ng-model="Bear.zone">
+                    <option ng-repeat="z in zoneList">{{z}}</option>
+                </select>
+
+            </label>
+            <div class="row item-divider expando-pane">
+                <div class="col col-center"><h4>Zone Mapping</h4></div>
+                <div class="col col-center text-right">
+                    <a ng-class="{'button button-small button-icon icon ion-ios-plus-outline':!showZoneSchema, 'button button-small button-icon icon ion-ios-minus-outline':showZoneSchema}" ng-click="showZoneSchema=!showZoneSchema"></a>
+                </div>
+            </div>
+            <div ng-model="showZoneSchema" ng-show="showZoneSchema" class="center" style="text-align: center;">
+                <img class="padding-top-20" ng-src="{{zoneImgURI}}">
+                    </div>
+
+            <div style="width: 283px; height: 22px;" class="spacer"></div>
+            <ion-item style="" class="item-divider list-head">Other Specs</ion-item>
+
+            <label style="" class="item item-select">
+			<span class="input-label">Size (regardless of gender)</span>
+                <select ng-model="Bear.size">
+                    <option>Small</option>
+                    <option>Medium</option>
+                    <option>Large</option>
+                </select>
+            </label>				
+            <label style="" class="item item-select">
+                <span class="input-label">Bear Species</span>
+                <select ng-model="Bear.species">
+                    <option>Unknown</option>
+                    <option>Black</option>
+					<option>Grizzly</option>
+                </select>
+            </label>
+            <label style="" class="item item-select">
+                <span class="input-label">Bear Gender</span>
+                <select ng-model="Bear.gender">
+                    <option>Unknown</option>
+					<option>Large Male</option>
+                    <option>Male</option>
+                    <option>Female</option>
+                    <option>Female with cubs</option>
+                </select>
+            </label>
+
+            <label style="" class="item item-select">
+                <span class="input-label">Bear Age</span>
+                <select ng-model="Bear.age">
+                    <option>Unknown</option>
+					<option>Adult</option>
+                    <option>Subadult</option>
+                    <option>Depandant</option>
+                </select>
+            </label>
+			
+			<label style="" class="item item-input">
+                <span class="input-label">Unique Markings</span>
+                <input placeholder="right or left side, location, size, description" type="text" ng-model="Bear.markDescription">
+            </label>
+			
+
+            <label style="" class="item item-select">
+                <span class="input-label">Fur Colour</span>
+                <select ng-model="Bear.furColour" >
+                    <option>Blonde</option>
+                    <option>Light Brown</option>
+                    <option>Brown</option>
+                    <option>Dark Brown</option>
+                    <option>Other</option>                    
+                </select>
+            </label>
+            
+            <label style="" class="item item-select">
+                <span class="input-label">Fur Condition</span>
+                <select ng-model="Bear.furCondition" >
+                    <option>Wet</option>
+                    <option>Dry</option>
+                </select>
+            </label>
+            
+            
+            <label style="" class="item item-select">
+                <span class="input-label">Fur Colour Variation</span>
+                <select ng-model="Bear.furCVariation" >
+                    <option>none</option>
+                    <option>Lighter Back</option>
+                    <option>Lighter Head</option>
+                    <option>Darker Legs</option>
+                    <option>Other</option>
+                </select>
+            </label>
+            
+            
+            
+            <div ng-show="bearFurColour == 'Other' ">
+                <label style="" class="item item-input">
+                    <span class="input-label">Fur Colour</span>
+                    <input type="text" ng-model="Bear.furColour_other">
+                </label>            
+            </div>
+
+            <ion-checkbox ng-model="Bear.pawMeasured">Paw Measurement Taken</ion-checkbox>
+			
+			<div style="width: 283px; height: 30px;" class="spacer"></div>
+            <ion-item style="" class="item-divider list-head">Cubs</ion-item>
+			<label style="" class="item item-input">
+                <span class="input-label">Number of cubs</span>
+                <input placeholder="(if present)" type="number" ng-model="Bear.cubs">
+            </label>
+			<label style="" class="item item-select">
+			<span class="input-label">Age of Cubs</span>
+                <select ng-model="Bear.cubAge">
+                    <option>Unknown</option>
+                    <option>COTY</option>
+                    <option>YRLG</option>
+                    <option>2nd YRLG</option>
+                    <option>3rd YRLG</option>                    					
+                </select>
+            </label>
+            
+                        <div style="width: 283px; height: 15px;" class="spacer"></div>
+
+            <ion-item style="" class="item-divider list-head">Select Cub Fur Colours</ion-item>
+            <ion-item style="" class="item-text-wrap">
+                <div class = "row" style="flex-wrap: wrap;">
+                    <div class = "col">
+                        <div class="item-text-wrap">
+                                        <ion-checkbox ng-model="Bear.CFCBlonde">Blonde</ion-checkbox>
+                                        <ion-checkbox ng-model="Bear.CBCLightBrown">Light Brown</ion-checkbox>
+                                        <ion-checkbox ng-model="Bear.CFCBrown">Brown</ion-checkbox>
+                        </div>
+                    </div>
+                    <div class = "col">
+                        <div class="item-text-wrap">
+                                        <ion-checkbox ng-model="Bear.CFCDarkBrown">Dark Brown</ion-checkbox>
+                                        <ion-checkbox ng-model="Bear.CFCOther">Other</ion-checkbox>
+                        </div>
+                    </div>
+                </div>
+            </ion-item>
+            
+            
+            <div style="width: 283px; height: 35px;" class="spacer"></div>
+            <label style="" class="item item-input">
+                <span class="input-label">Comment</span><textarea  ng-model="Bear.comment" placeholder=""> </textarea>
+            </label>
+            <div style="width: 283px; height: 22px;" class="spacer"></div>
+            <div style="width: 283px; height: 22px;" class="spacer"></div>
+            <a style="" class="button button-balanced  button-block ion-android-checkbox-outline" ng-click="addBear()">&nbsp; Save Bear</a>
+            <a style="" class="button button-assertive  button-block  ion-backspace-outline" id="addNewBear-button21" ui-sref="tab.bear">&nbsp; Cancel</a>
+        </form>
+        <div class="spacer spacer-20"></div>
+
+        <!-- Help section-->
+        <div ng-model="showHelp" ng-show="showHelp" class="card">
+            <div class="container">
+                <div class="row border-bottom">
+                    <div class="col col-33">
+                    </div>
+                    <div class="col col-33 col-bottom text-center">
+                        <h3>Help Topics</h3> 
+                    </div>
+                    <div class="col col-33 col-center text-right">
+                        <a class="button button-icon icon ion-close-circled" ng-click="hideHelp()"></a>
+                    </div>
+                </div>
+                <div class="spacer spacer-10"></div>
+                <div class="row item-divider expando-pane">
+                    <div class="col col-center"><h4>General</h4></div>
+                    <div class="col col-center text-right">
+                        <a ng-class="{'button button-small button-icon icon ion-ios-plus-outline':!genHelp, 'button button-small button-icon icon ion-ios-minus-outline':genHelp}" ng-click="genHelp=!genHelp"></a>
+                    </div>
+                </div>
+                <div ng-model="genHelp" ng-show="genHelp" class="container">
+                    <div class="spacer spacer-10"></div>
+                    <p>Fill in the fields below with all available information pertaining to the observed bear.</p>
+                    <div class="spacer spacer-10"></div>
+                </div>
+
+                <div class="row item-divider expando-pane">
+                    <div class="col col-center"><h4>Name of Bear</h4></div>
+                    <div class="col col-center text-right">
+                        <a ng-class="{'button button-small button-icon icon ion-ios-plus-outline':!nameHelp, 'button button-small button-icon icon ion-ios-minus-outline':nameHelp}" ng-click="nameHelp=!nameHelp"></a>
+                    </div>
+                </div>
+                <div ng-model="nameHelp" ng-show="nameHelp" class="container">
+                    <div class="spacer spacer-10"></div>
+                    <p>This field is automatically populated with bear1, bear2, etc., unless you add a name. For known, named, bears use names consistently. If you are not sure of the identification of a bear, you can leave this blank (it will automatically populate) and then return and change it if the id becomes clear.</p>
+                    <div class="spacer spacer-10"></div>
+                </div>
+
+                <div class="row item-divider expando-pane">
+                    <div class="col col-center"><h4>Paw Measurement Taken</h4></div>
+                    <div class="col col-center text-right">
+                        <a ng-class="{'button button-small button-icon icon ion-ios-plus-outline':!foodHelp, 'button button-small button-icon icon ion-ios-minus-outline':foodHelp}" ng-click="foodHelp=!foodHelp"></a>
+                    </div>
+                </div>
+                <div ng-model="foodHelp" ng-show="foodHelp" class="container">
+                    <div class="spacer spacer-10"></div>                    
+                    <p>If you have the opportunity to measure a track, check this box. The measurements will not be collected in the application, but if necessary someone can track down the measurements in the local office. Follow the protocols in Herrero 1985.</p>
+                    <img src="img/paw_meas.png" alt="Paw Measure Picture" class="center">
+                    <div class="spacer spacer-10"></div>
+                </div>
+            </div>
+            <div class="spacer spacer-20"></div>            
+        </div><!--End Help-->
+
+        <div class="spacer spacer-40"></div>
+    </ion-content>
+</ion-view>

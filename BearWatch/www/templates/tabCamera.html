@@ -1,0 +1,111 @@
+<ion-view style="" title="Camera">
+	<ion-nav-title>
+		<div width=100% class="dashboardHeader" ng-controller="timerControl">
+			<div class="row">
+                <div class="col text-right">
+                    Camera
+                </div>
+                <div class="col text-left">                
+                    <span style="color:{{color}}">
+                        {{value}}
+                    </span>
+                </div>
+            </div>
+		</div>
+	</ion-nav-title>
+    <div>
+        <ion-nav-bar class="bar-stable">
+            <ion-nav-buttons side="right">
+                <a class="button icon-left ion-log-out button-small button-assertive" ng-click = "showConfirm()">&nbsp;End Session</a>
+            </ion-nav-buttons>
+        </ion-nav-bar>
+        <ion-nav-view animation="slide-left-right" ></ion-nav-view>
+    </div>
+    <ion-content class="has-header container" overflow-scroll="true" padding="true" ng-controller="tabCameraCtrl">
+        <div class="spacer spacer-40"></div>
+        <div class="center">
+            <img ng-show="imgURI !== undefined" ng-src="{{imgURI}}" class="img-300">
+            <img ng-show="imgURI === undefined" ng-src="img/pic_placeholder.png">
+        </div>
+        <div class="spacer spacer-20"></div>
+        
+        <div class="list" ng-show="imgURI !== undefined">
+            <div class="row item-divider expando-pane">
+                <div class="col col-center"><h4>Subject(s) in Picture</h4></div>
+                <div class="col col-center text-right">
+                    <a ng-class="{'button button-small button-icon icon ion-ios-plus-outline':!showSubjects, 'button button-small button-icon icon ion-ios-minus-outline':showSubjects}" ng-click="showSubjects=!showSubjects"></a>
+                </div>
+            </div>
+            <div ng-model="showSubjects" ng-show="showSubjects">
+                <ion-item ng-show="Picture.subjects.length == 0" class="item-divider">No bears added to session</ion-item>
+                <ion-checkbox ng-repeat="bear in Picture.subjects" ng-model="bear.selected">{{bear.name}}</ion-checkbox>             
+            </div>
+            <div class="spacer spacer-20"></div>
+            <label class="item item-input">
+                <span class="input-label">Comment:</span>
+                <input placeholder="Picture description" ng-model="Picture.comment" type="text" >
+            </label>                
+        </div>
+        <div ng-show="imgURI === undefined">
+            <div class="center">
+                <button ng-click="takePhoto()" class="button button-positive button-outline icon-left ion-ios-camera-outline" id="camera-button1">Take Picture</button>
+            </div>
+            <div class="spacer spacer-40"></div>
+
+            <ion-item class="item-divider list-head">Alternative Media</ion-item>
+            <ion-toggle ng-model="Session.otherMedia" toggle-class="toggle-balanced">Pictures Taken Using Other Camera/Media</ion-toggle>
+            <div ng-show="Session.otherMedia">
+                <div class="item item-input-inset">
+                    <label class="item item-input-wrapper">     
+                        <input type="text" placeholder="Describe Type and Location" ng-model="Session.extPicLoc"> </textarea>
+                    </label>
+                    <button class="button button-balanced icon ion-ios-upload-outline" ng-click="Session.save()">&nbsp; Update</button>
+                </div>
+            </div>
+        </div>
+        <div class="button-bar" ng-show="imgURI !== undefined">
+            <a ng-click="choosePhoto()" class="button button-balanced button-outline icon ion-archive">&nbsp; Record</a>
+            <a ng-click="discardPhoto(true)" class="button button-assertive button-outline icon ion-trash-a">&nbsp; Discard</a>
+        </div>
+        
+        <div class="spacer spacer-40"></div>
+
+        <div class="row item-divider expando-pane" ng-show="Picture.pictures.length > 0">
+            <div class="col col-center"><h4>Session Pictures</h4></div>
+            <div class="col col-center text-right">
+                <a ng-class="{'button button-small button-icon icon ion-ios-plus-outline':!showPictures, 'button button-small button-icon icon ion-ios-minus-outline':showPictures}" ng-click="showPictures=!showPictures"></a>
+            </div>
+        </div>
+        <div class="spacer spacer-20"></div>
+        <div ng-model="showPictures" ng-show="showPictures">
+            <ion-item ng-repeat="picture in Picture.pictures">
+                <div class="card">
+                    <div class="item item-text-wrap">                 
+                        <div class="row border-bottom">
+                            <div class="col col-bottom col-75">
+                                <p>{{picture.fileName}}</p>
+                            </div>
+                            <div class="col col-center text-right">
+                                <div class="button-bar">
+                                    <a class="button button-icon icon ion-edit" ng-click="editPicture(picture.id)"></a>
+                                    <a class="button button-icon icon ion-close-circled" ng-click="clearConfirm(picture.id)"></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="row padding-top-20">
+                            <div class="col col-center center">
+                                <img ng-src="{{picture.imgURI}}" class="img-300">
+                            </div>
+                            <div class="col col-bottom">
+                                <p>Subjects: {{picture.subjectString}}</p>
+                                <p>Comment: {{picture.comment}}</p>                                        
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </ion-item>
+        </div>
+        <div class="spacer spacer-40"></div>
+    </ion-content>
+    
+</ion-view>

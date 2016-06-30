@@ -1,0 +1,306 @@
+<ion-view title="Session Setup">
+	<ion-content class="has-header container" overflow-scroll="true" padding="true" delegate-handle="startScroll">
+        <div class="spacer spacer-10"></div>
+        <div class="row">
+            <div class="col col-33">
+            </div>
+            <div class="col col-33 text-center">
+                <h2>New Session</h2>
+            </div>
+            <div class="col col-33 text-right">
+                <a ng-click="scrollDown()"><i class="ion-help-circled help"></i></a>
+            </div>
+        </div>
+        <!--session setup progress-->
+        <div class="breadcrumb center">
+            <i class="ion-ios-circle-filled"></i>
+            <i class="ion-ios-circle-outline"></i>
+            <i class="ion-ios-circle-outline"></i>
+        </div> 
+        <div class="spacer spacer-20"></div>
+
+        <form name="startForm" novalidate  ng-submit="validate(startForm)" class="list">
+
+            <!--Session observers-->
+            <ion-item class="item-divider list-head">Add Observer(s)</ion-item>
+            <div class="list">
+                <div class="item item-input-inset">
+                    <label class="item item-input-wrapper">		
+                        <input type="text" placeholder="First Name" ng-model="Session.firstName">
+                    </label>
+                    <label class="item item-input-wrapper">     
+                        <input type="text" placeholder="Last Name" ng-model="Session.lastName">
+                    </label>
+                    <a class="button button-balanced icon ion-person-add" ng-click="addObserver()">&nbsp; Add</a>
+                </div>
+            </div>
+            
+            <!--show active observer names with remove option-->
+            <ion-item ng-show="Session.nameResult.length != 0" class="item-divider">Observers in Session</ion-item>
+            <ion-list>
+                <ion-item ng-repeat="name in Session.nameResult" class="item item-button-right">
+                    {{name}}
+                    <a class="button button-icon icon ion-close-circled" ng-click="clearObserver(name)"></a>
+                </ion-item>
+            </ion-list>
+            <div class="spacer spacer-10"></div>
+
+            <div ng-show="submitted && Session.nameResult.length == 0 && (Session.firstName == '' || Session.lastName == '')" >
+                <div class="error-container">
+                    <div class="error">
+                        <i class="ion-alert-circled"></i> 
+                        First and last name are required fields!
+                    </div>
+                  <div class="spacer spacer-10"></div>
+                </div>
+            </div>
+            <div ng-show="submitted && Session.firstName != '' && Session.lastName !=''" >
+                <div class="error-container">
+                    <div class="error">
+                        <i class="ion-alert-circled"></i> 
+                        Observer needs to be added to session! (press the green button)
+                    </div>
+                  <div class="spacer spacer-10"></div>
+                </div>
+            </div>
+            <div class="spacer spacer-10"></div>
+            <!--end observers-->
+            
+            <!--Park-->
+			<div class="spacer spacer-10"></div>
+            <ion-item class="item-divider list-head">Location</ion-item>
+            <div ng-class="{ 'has-errors' : (submitted && !parkChecked), 'no-errors' : (submitted && startForm.park.$valid && parkChecked)}">
+    			<label ng-hide="parkChecked" class="item item-input">
+                    <span class="input-label">Protected Area:</span>
+                    <input name="park" type="text" ng-model="Session.park" ng-change="changePark()" required>
+                </label>
+                <ion-item ng-show="parkChecked" class="item item-button-right">
+                    {{Session.park}}
+                    <a class="button button-icon icon ion-close-circled" ng-click="clearPark()"></a>
+                </ion-item>
+            </div>
+            <div ng-show="submitted && startForm.park.$error" ng-messages="startForm.park.$error">
+                <div class="error-container">
+                  <div ng-messages-include="error-list.html"></div>
+                  <div class="spacer spacer-10"></div>
+                </div>
+            </div>
+
+            <!-- Search box for park names-->
+            <label class="list" ng-show="Session.park.length > 0 && showList ">
+                <ion-item class="item-divider">Select Protected Area</ion-item>
+                <div ng-repeat="park in parkNames | filter:Session.park | limitTo:4 ">
+                    <ion-radio ng-model="Session.park" value="{{park}}" ng-click="parkSelected()" required>{{park}}</ion-radio>
+                </div>
+                <div class="spacer spacer-10"></div>
+            </label>
+            <div ng-show="submitted && !parkChecked && !startForm.park.$error.required" >
+                <div class="error-container">
+                    <div class="error">
+                        <i class="ion-alert-circled"></i> 
+                        You must select parks from the provided list!
+                    </div>
+                  <div class="spacer spacer-10"></div>
+                </div>
+            </div>
+            <!--End Park-->
+
+            <!--Site-->
+			<label class="item item-input" ng-class="{ 'has-errors' : (submitted && startForm.site.$invalid), 'no-errors' : (submitted && startForm.site.$valid)}">
+                <span class="input-label">Site Within Protected Area:</span>
+                <input name="site" type="text" ng-model="Session.site" required>
+            </label>
+            <div ng-show="submitted && startForm.site.$error" ng-messages="startForm.site.$error">
+                <div class="error-container">
+                  <div ng-messages-include="error-list.html"></div>
+                  <div class="spacer spacer-10"></div>
+                </div>
+            </div>
+            <!--End Site-->
+
+    	    <!--ViewingArea-->
+            <div class="spacer spacer-20"></div>
+            <ion-item class="item-divider list-head">Observation Mode</ion-item>
+            <label class="item item-select" ng-class="{ 'has-errors' : (submitted && startForm.viewingArea.$invalid), 'no-errors' : (submitted && startForm.viewingArea.$valid)}">
+                <span class="input-label">Viewing Location:</span>
+                <select name="viewingArea" ng-model="Session.viewingArea" required>
+                    <option value="Platform">Platform</option>
+                    <option value="Boating">Boat</option>
+                    <option value="Blind">Blind</option>
+    				<option value="Other">Other</option>
+                </select>
+            </label>
+            <div ng-show="Session.viewingArea == 'Other'">
+               <label class="item item-input" ng-class="{ 'has-errors' : (submitted && startForm.viewingOther.$invalid), 'no-errors' : (submitted && startForm.viewingOther.$valid)}">
+                   <span class="input-label">Description:</span>
+                   <input name="viewingOther" ng-model="Session.viewingAreaOther" placeholder="Description" type="text" ng-required="Session.viewingArea == 'Other'">
+               </label>
+            </div>
+
+            <div ng-show="submitted && startForm.viewingOther.$error" ng-messages="startForm.viewingOther.$error">
+                <div class="error-container">
+                  <div ng-messages-include="error-list.html"></div>
+                  <div class="spacer spacer-10"></div>
+                </div>
+            </div>
+
+            <div ng-show="submitted && startForm.viewingArea.$error" ng-messages="startForm.viewingArea.$error">
+                <div class="error-container">
+                  <div ng-messages-include="error-list.html"></div>
+                  <div class="spacer spacer-10"></div>
+                </div>
+            </div>
+            <!--End ViewingArea-->
+
+            <!--Stationary-->
+            <div class="list">
+                <ion-item class="item-divider" ng-class="{ 'has-errors' : (submitted && startForm.stationary.$invalid), 'no-errors' : (submitted && startForm.stationary.$valid)}">Observer Movement During Observation</ion-item>
+                <ion-radio name="stationary" ng-model="Session.stationary" value="Stationary" ng-required="Session.stationary == ''">Stationary</ion-radio>
+                <ion-radio name="stationary" ng-model="Session.stationary" value="Mobile" ng-required="Session.stationary == ''">Mobile</ion-radio>
+            </div>
+
+            <div class="error-container" ng-show="submitted && startForm.stationary.$error" ng-messages="startForm.stationary.$error">
+                <div ng-messages-include="error-list.html"></div> 
+                <div class="spacer spacer-10"></div>
+            </div>
+            <!--End Stationary-->
+    	   
+            <!--Zone type-->
+    		<div class="spacer spacer-10"></div>
+    		<ion-item class="item-divider list-head">Zone</ion-item>
+            <label class="item item-select" ng-class="{ 'has-errors' : (submitted && startForm.zoneSchema.$invalid), 'no-errors' : (submitted && startForm.zoneSchema.$valid)}">
+                <span class="input-label">Classification:</span>
+                <select name="zoneSchema" ng-model="Session.zoneSchema" ng-change="showZoneSchema(Session.zoneSchema)" required>
+                    <option>River</option>
+                    <option>Estuary</option>
+    				<option>Terrestrial</option>
+    			</select>
+            </label>
+            <div ng-show="submitted && startForm.zoneSchema.$error" ng-messages="startForm.zoneSchema.$error">
+                <div class="error-container">
+                    <div ng-messages-include="error-list.html"></div>
+                    <div class="spacer spacer-10"></div>
+                </div>
+            </div>
+
+            <div ng-show="zoneList != ''" ng-hide="zoneList == ''">
+                <label class="item item-select" ng-class="{ 'has-errors' : (submitted && startForm.obsArea.$invalid), 'no-errors' : (submitted && startForm.obsArea.$valid)}">
+                    <span class="input-label">Observer Location ({{Session.zoneSchema}}) (See Help):</span>
+                    <select name="obsArea" ng-model="Session.obsArea" ng-required="zoneList != ''">
+                        <option ng-repeat="z in zoneList">{{z}}</option>
+                    </select>
+                </label>
+            </div>    
+            <div class="error-container" ng-show="submitted && startForm.obsArea.$error" ng-messages="startForm.obsArea.$error">
+                <div ng-messages-include="error-list.html"></div> 
+                <div class="spacer spacer-10"></div>
+            </div>
+
+            <div ng-show="Session.zoneSchema != ''" class="center">
+                <div class="spacer spacer-20"></div>
+                <h3>{{Session.zoneSchema}} Zone Map</h3>
+                <p><em>The image below shows the mapping of the {{Session.zoneSchema}} zone. Descriptions can be found in the help section.</em></p>
+                <br/>
+                <img ng-src="{{zoningSchemaPic}}" alt="zoning picture">
+                <div class="spacer spacer-20"></div>
+            </div>
+                
+    		<label class="item item-input">
+    			<span class="input-label">Comment:</span>
+    			<input ng-model="Session.comment" type="text" placeholder="Additional Zone Information">
+            </label>
+            <!--End Zone type-->
+    	    
+    	    <div class="spacer spacer-20"></div>
+    	    <button class="button button-positive button-block icon-right ion-android-arrow-forward" type="submit">Next</button>
+        </form><!--End startForm-->
+        
+        <div class="spacer spacer-20"></div>
+        <!-- Help section-->
+        <div ng-model="showHelp" ng-show="showHelp" class="card">
+            <div class="container">
+                <div class="row border-bottom">
+                    <div class="col col-33">
+                    </div>
+                    <div class="col col-33 col-bottom text-center">
+                        <h3>Help Topics</h3> 
+                    </div>
+                    <div class="col col-33 col-center text-right">
+                        <a class="button button-icon icon ion-close-circled" ng-click="hideHelp()"></a>
+                    </div>
+                </div>
+                <div class="spacer spacer-10"></div>
+                <div class="row item-divider expando-pane">
+                    <div class="col col-center"><h4>General</h4></div>
+                    <div class="col col-center text-right">
+                        <a ng-class="{'button button-small button-icon icon ion-ios-plus-outline':!genHelp, 'button button-small button-icon icon ion-ios-minus-outline':genHelp}" ng-click="genHelp=!genHelp"></a>
+                    </div>
+                </div>
+                <div ng-model="genHelp" ng-show="genHelp" class="container">
+                    <div class="spacer spacer-10"></div>
+                    <p>Fill in the fields below in order to begin setting up your session.</p>
+                    <p>All fields on this page must be filled in before you can proceed. Press +Add after entering your name and each subsequent name if appropriate.</p>
+                    <p>In the Protected Areas field, begin typing to bring up a list of protected areas with the letter sequence. Choose the name off the drop down list that appears. If you are not in a provincial protected area, choose the closest one off the list and put your exact location in the following field.</p>
+                    <div class="spacer spacer-10"></div>
+                </div>
+
+                <div class="row item-divider expando-pane">
+                    <div class="col col-center"><h4>Zone Descriptions</h4></div>
+                    <div class="col col-center text-right">
+                        <a ng-class="{'button button-small button-icon icon ion-ios-plus-outline':!zoneHelp, 'button button-small button-icon icon ion-ios-minus-outline':zoneHelp}" ng-click="zoneHelp=!zoneHelp"></a>
+                    </div>
+                </div>
+                <div ng-model="zoneHelp" ng-show="zoneHelp" class="container">
+                    <div class="spacer spacer-10"></div>
+                    <p>Zonation Schemes – Before you begin collecting data, define your surroundings in one of the available zonation schemes: river, estuary or terrestrial. Your location will the shaded zone that is most appropriate. The zones are approximately 100 m wide unless there are obvious breaks. Take the time to describe the zones well enough that someone else can use the same scheme from the same location. It is quite possible that all the zones in the scheme will not be visible so will not be part of your description. Save your description in a document outside of the application, for instance a WORD doc in Docs to Go.</p>
+                    
+                    <h3>River:</h3>
+                    <p>If you are on the shores of a river you will be in either zone 6 or zone 4. Those on river right (right side when facing downstream) will be in zone 6. Those on river left will be in zone 4. This zone will extend about 50 m on either side of you or to an obvious break in the landscape. Find something approximately 100 m beyond that break to define the zones to your right and left. It will be useful if the zones across the river have approximately the same breaks. The depth of the zone will be as far as you can see. The river itself will be zones 2+, 2, 5, 8 and 8+.</p>
+                    <p>If you are in a boat you will be in zone 5. The zones are defined relative to your current location and will therefore be shifting continuously (unless you are anchored). You will not be able to pre-define the zones, so use approximate distances. In a serpentine river it will be difficult to see beyond the 3 central zones on each shore and in the river.</p>
+
+                    <h3>Estuary:</h3>
+                    <p>In an estuary situation you may be either in a boat or on the shore. If you are in a boat, you will be in zone 6. As the boat moves, the zones will change. Zone 5 will be the visible water directly in front of you and approximately 100 m wide. Zone 4 will be the shoreline adjacent to the water. To the right and left there will be paired water and shoreline zones of approximately 100 m. Beyond that zone everything you can see is in the final paired zones on either side.</p>
+                    <p>If you are on the shore, you will be in zone 4. The zones are the same as those described for the boat, but they will be stable and therefore you will be able to describe them based on landscape breaks if that is helpful.</p>
+
+                    <h3>Terrestrial:</h3>
+                    <p>This schema is the most flexible. It is assumed that you are not moving during observations, but if you do, your zones will shift. You are always in zone 5. If you are mobile, try to use regular 100 m by 100 m zones. If you are stationary, you can define the zones in a way that makes sense to the landscape.</p>
+                    <p>This schema is the most flexible. Use it in any situation that is not obviously <strong>River</strong> or <strong>estuary</strong>. It is assumed that you are not moving during observations, but if you do, your zones will shift with you. You are always in zone 5. If you are mobile, try to use regular 100 m by 100 m zones. If you are stationary, you can define the zones in a way that makes sense to the landscape.</p>
+                    <p>Describe any bodies of water or wetlands within the Zone Scheme initially in the comment section. If you are mobile, update this using the General Comment section in the Dashboard section.</p>
+                    <div class="spacer spacer-10"></div>
+                </div>
+
+                <div class="row item-divider expando-pane">
+                    <div class="col col-center"><h4>Movement During Observation</h4></div>
+                    <div class="col col-center text-right">
+                        <a ng-class="{'button button-small button-icon icon ion-ios-plus-outline':!stationaryHelp, 'button button-small button-icon icon ion-ios-minus-outline':stationaryHelp}" ng-click="stationaryHelp=!stationaryHelp"></a>
+                    </div>
+                </div>
+                <div ng-model="stationaryHelp" ng-show="stationaryHelp" class="container">
+                    <div class="spacer spacer-10"></div>
+                    <p>If you are on a boat or walking a route or transect, you will choose Mobile. If you are in a single location, including movements of up to 100 m, choose stationary.</p>
+                    <div class="spacer spacer-10"></div>
+                </div>
+
+            </div>
+            <div class="spacer spacer-20"></div>            
+        </div><!--End Help-->
+
+        <div class="spacer spacer-40"></div>
+	   	</ion-content>
+</ion-view>
+
+<!--generic error messages-->
+<script id="error-list.html" type="text/ng-template">  
+    <div class="error" ng-message="required">
+        <i class="ion-alert-circled"></i> 
+        The field above is required!
+    </div>
+    <div class="error" ng-message="minlength">
+        <i class="ion-alert-circled"></i> 
+        Minimum length of this field is 2 characters!
+    </div>
+    <div class="error" ng-message="maxlength">
+        <i class="ion-alert-circled"></i> 
+        Maximum length of this field is 25 characters!
+    </div>
+</script> 
