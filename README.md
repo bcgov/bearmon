@@ -26,6 +26,16 @@ The Bear Watch application is essentially a form that can be completed in a dyna
 
 ## How to Contribute
 
+
+## Contributors
+
+Many thanks to the Camosun Capstone team below, all of whom worked to provide the initial build of this appplication:
+- Chris Cocker, [LinkedIn Profile](https://ca.linkedin.com/in/christophercocker "Contact Chris")
+- Preet  Saini, [LinkedIn Profile](https://ca.linkedin.com/in/preet-saini-564524109 "Contact Preet")
+- Peter Platten, [LinkedIn Profile](https://ca.linkedin.com/in/peterplatten "Contact Peter")
+
+
+
 ## License
 
     Copyright 2015 Province of British Columbia
